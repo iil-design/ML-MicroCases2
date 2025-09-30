@@ -104,6 +104,21 @@ R² = 0.6264，中等水平。
 <img width="1650" height="879" alt="image" src="https://github.com/user-attachments/assets/7d21a687-2b08-4569-85be-dec6542c56d0" />
 
 
+模型p值：
+
+<img width="924" height="387" alt="image" src="https://github.com/user-attachments/assets/78248b29-b7ab-40e1-bde8-a5eff53aaa85" />
+
+结论：
+线性回归中，客户价值主要受历史贷款金额、贷款次数、学历和月收入影响，而性别几乎没有影响。
+
+<img width="902" height="1155" alt="image" src="https://github.com/user-attachments/assets/f90d678d-afcf-47f8-9ea8-87771de564a4" />
+
+结论：
+
+多项式回归中，一些二次项和交互项变得显著：
+历史贷款金额²、历史贷款金额 × 月收入、历史贷款金额 × 性别、学历 × 性别。
+原始的一次项（历史贷款金额、贷款次数、学历、月收入、性别）在多项式回归中不显著。
+说明非线性关系和交互效应对客户价值有影响，但线性关系可能被多项式复杂化掩盖。
 
 总结分析：
 
