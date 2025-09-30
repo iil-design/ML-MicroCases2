@@ -14,7 +14,6 @@ df = pd.read_excel(
 # 特征列
 X = df[['历史贷款金额', '贷款次数', '学历', '月收入', '性别']].values
 y = df['客户价值'].values
-
 n = len(y)
 
 # ================== 1. 线性回归 ==================
@@ -74,15 +73,38 @@ knn_reg.fit(X, y)
 r2_knn = knn_reg.score(X, y)
 adj_r2_knn = 1 - (1 - r2_knn) * (n - 1) / (n - X.shape[1] - 1)
 
-# ================== 结果汇总 ==================
+# ================== 结果汇总（加入 P 值） ==================
 results = pd.DataFrame({
     "模型": ["线性回归","二次多项式回归","岭回归","SVR (RBF)","KNN回归 (k=3)"],
     "R²": [r2_lin, r2_poly, r2_ridge, r2_svr, r2_knn],
-    "调整后R²": [adj_r2_lin, adj_r2_poly, adj_r2_ridge, adj_r2_svr, adj_r2_knn]
+    "调整后R²": [adj_r2_lin, adj_r2_poly, adj_r2_ridge, adj_r2_svr, adj_r2_knn],
+    "P值": [
+        p_values_lin[1],  # 线性回归，第一个特征（历史贷款金额）的 P 值示例
+        p_values_poly[1],  # 二次多项式回归，取第一个特征的一次项 P 值
+        "不适用",          # 岭回归
+        "不适用",          # SVR
+        "不适用"           # KNN
+    ]
 })
 
-print("\n=== 模型评估汇总 ===")
-print(results)
+# 打印每个模型的 P 值
+for i, row in results.iterrows():
+    print(f"{row['模型']} P值: {row['P值']}")
+
+# ================== 打印每个特征的 P 值 ==================
+feature_names = ['历史贷款金额', '贷款次数', '学历', '月收入', '性别']
+
+# 线性回归 P 值
+p_values_lin_all = pd.Series(p_values_lin[1:], index=feature_names)
+print("\n=== 线性回归各特征 P值 ===")
+print(p_values_lin_all)
+
+# 二次多项式回归 P 值
+poly_feature_names = poly.get_feature_names_out(feature_names)
+# 去掉截距对应的 p 值
+p_values_poly_all = pd.Series(p_values_poly[1:], index=poly_feature_names)
+print("\n=== 二次多项式回归各特征及交互项 P值 ===")
+print(p_values_poly_all)
 
 # ================== 可视化 ==================
 x = np.arange(len(results))
@@ -102,7 +124,6 @@ for bar in bar1 + bar2:
                 textcoords="offset points",
                 ha='center', va='bottom', fontsize=9)
 
-# 设置刻度和标签
 ax.set_xticks(x)
 ax.set_xticklabels(results['模型'], rotation=20, ha='right')
 ax.set_ylabel("R方")
